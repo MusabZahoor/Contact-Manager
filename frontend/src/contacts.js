@@ -8,7 +8,6 @@ import {
   Button,
   CardHeader,
   CardBody,
-  Badge,
   Modal
 } from 'react-bootstrap';
 import axios from 'axios';
@@ -28,13 +27,13 @@ import {
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     address: ''
   });
-  const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -107,7 +106,7 @@ const Contacts = () => {
         <CardHeader className="bg-secondary text-white text-center">
           <h4 className="mb-0">
             <FontAwesomeIcon icon={faPlus} className="me-2" />
-            {editingId ? 'Edit Contact' : 'Add New Contact'}
+            Add New Contact
           </h4>
         </CardHeader>
         <CardBody>
@@ -176,9 +175,9 @@ const Contacts = () => {
                 </Form.Group>
 
                 <div className="text-center">
-                  <Button variant={editingId ? "warning" : "success"} type="submit" size="lg">
-                    <FontAwesomeIcon icon={editingId ? faSave : faPlus} className="me-2" />
-                    {editingId ? 'Update Contact' : 'Add Contact'}
+                  <Button variant="success" type="submit" size="lg">
+                    <FontAwesomeIcon icon={faPlus} className="me-2" />
+                    Add Contact
                   </Button>
                 </div>
               </Col>
@@ -232,6 +231,76 @@ const Contacts = () => {
           </Col>
         ))}
       </Row>
+
+      {/* Edit Modal */}
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Contact</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}>
+            <Form.Group className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="danger" onClick={handleCloseModal}>
+                <FontAwesomeIcon icon={faTimes} className="me-1" /> Cancel
+              </Button>
+              <Button 
+                variant="success" 
+                type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }}
+              >
+                <FontAwesomeIcon icon={faSave} className="me-1" /> Save Changes
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
 
       {/* Error Alert */}
       {error && (
